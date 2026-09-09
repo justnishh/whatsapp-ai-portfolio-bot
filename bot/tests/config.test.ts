@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
-import { buildConfig } from '../src/config';
+import { buildConfig } from '../src/config.js';
 
 const baseEnv = {
   OPENAI_API_KEY: 'sk-test',
