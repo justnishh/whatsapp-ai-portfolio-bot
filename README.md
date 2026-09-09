@@ -53,15 +53,16 @@ Run the bot locally without Docker (WAHA must still be running):
 
 ```bash
 cd bot
-cp ../.env .env
 npm install
-npm run dev
+KNOWLEDGE_DIR=../knowledge npm run dev
 ```
 
-Note: the `knowledge/` directory lives at the repo root, while local dev runs
-from `bot/`. Set `KNOWLEDGE_DIR=../knowledge` in `bot/.env` (or run from the
-repo root) so the bot can find it. Docker mounts the directory correctly, so
-no change is needed there.
+The dev script auto-loads the root `.env` (via Node's `--env-file`), so you
+don't need to copy it into `bot/`. The `knowledge/` directory lives at the
+repo root while local dev runs from `bot/`, so the `KNOWLEDGE_DIR=../knowledge`
+prefix points the bot at it — the prefix works because real environment
+variables take precedence over values from `--env-file`. Docker mounts the
+directory correctly, so no override is needed there.
 
 Run tests:
 

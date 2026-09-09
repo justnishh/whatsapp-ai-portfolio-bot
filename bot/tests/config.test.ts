@@ -31,4 +31,9 @@ describe('buildConfig', () => {
     const cfg = buildConfig({ ...baseEnv, TEST_MODE: '1' });
     expect(cfg.testMode).toBe(true);
   });
+
+  it('defaults KNOWLEDGE_DIR to ./knowledge', () => {
+    const cfg = buildConfig({ ...baseEnv });
+    expect(cfg.knowledgeDir).toBe('./knowledge');
+  });
 });
