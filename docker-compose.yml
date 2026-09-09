@@ -1,0 +1,35 @@
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: waha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      WAHA_API_KEY: ${WAHA_API_KEY}
+      WAHA_LOG_LEVEL: info
+    volumes:
+      - waha-data:/app/.sessions
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/sessions"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    build: ./bot
+    container_name: waha-portfolio-bot
+    restart: unless-stopped
+    ports:
+      - "3333:3333"
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      waha:
+        condition: service_healthy
+    volumes:
+      - ./knowledge:/app/knowledge:ro
+
+volumes:
+  waha-data:
