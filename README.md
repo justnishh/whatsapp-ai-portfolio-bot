@@ -16,7 +16,7 @@ WAHA, OpenAI, Node.js, and Docker.
 1. Clone the repo and copy the environment file:
 
 ```bash
-git clone https://github.com/justnishh/whatsapp-ai-portfolio-bot.git
+git clone https://github.com/nishantnakum/whatsapp-ai-portfolio-bot.git
 cd whatsapp-ai-portfolio-bot
 cp .env.example .env
 ```
