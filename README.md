@@ -28,6 +28,9 @@ OPENAI_API_KEY=sk-...
 WAHA_API_KEY=replace-with-a-long-random-string
 ```
 
+Use a plain random string (e.g. the output of `openssl rand -hex 24`) — not
+WAHA's `sha512:` hash format — since the bot forwards it verbatim.
+
 3. Edit the markdown files in `knowledge/` to describe yourself.
 
 4. Start the services:
@@ -36,8 +39,13 @@ WAHA_API_KEY=replace-with-a-long-random-string
 docker compose up -d
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000), scan the QR code with
-   WhatsApp on your phone.
+5. WAHA needs a session started before it can connect. Open the WAHA
+   dashboard at [http://localhost:3000](http://localhost:3000) and start the
+   `default` session (or run `curl -X POST
+   http://localhost:3000/api/sessions/start -H "X-Api-Key: $WAHA_API_KEY" -H
+   "Content-Type: application/json" -d '{"name": "default"}'`), then scan the
+   QR code with WhatsApp on your phone. The dashboard password is
+   auto-generated and appears in `docker compose logs waha`.
 
 6. Text that WhatsApp number from another phone:
 

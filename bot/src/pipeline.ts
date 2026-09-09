@@ -2,7 +2,7 @@ import type { Config } from './config.js';
 import type { MemoryStore } from './memory.js';
 import type { AiEngine } from './ai.js';
 import type { WahaClient } from './waha.js';
-import type { WahaWebhookBody, Message } from './types.js';
+import type { WahaWebhookBody } from './types.js';
 import { logger } from './logger.js';
 
 export interface PipelineContext {
@@ -22,8 +22,17 @@ export async function handleMessage(
 ): Promise<void> {
   const { event, session, payload } = body;
 
-  if (event !== 'message' || payload.fromMe || payload.type !== 'chat' || !payload.body?.trim()) {
-    logger.debug({ event, fromMe: payload.fromMe, type: payload.type }, 'Ignoring webhook event');
+  if (
+    event !== 'message' ||
+    payload.fromMe ||
+    payload.from.endsWith('@g.us') ||
+    !payload.body?.trim() ||
+    payload.hasMedia
+  ) {
+    logger.debug(
+      { event, fromMe: payload.fromMe, from: payload.from, hasMedia: payload.hasMedia },
+      'Ignoring webhook event',
+    );
     return;
   }
 
@@ -43,15 +52,14 @@ export async function handleMessage(
   const history = ctx.memory.get(phone);
   const reply = await ctx.ai.reply(ctx.systemPrompt, history, text);
 
-  const userMsg: Message = {
+  await ctx.waha.sendText(session, phone, reply);
+
+  ctx.memory.add(phone, {
     id: payload.id,
     role: 'user',
     text,
     timestamp: payload.timestamp,
-  };
-  ctx.memory.add(phone, userMsg);
-
-  await ctx.waha.sendText(session, phone, reply);
+  });
 
   ctx.memory.add(phone, {
     id: `reply-${payload.id}`,

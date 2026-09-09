@@ -12,7 +12,7 @@ export interface WahaMessagePayload {
   from: string;
   fromMe: boolean;
   body: string;
-  type: string;
+  hasMedia?: boolean;
   timestamp: number;
 }
 

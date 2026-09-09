@@ -11,7 +11,7 @@ function makePayload(body: string, overrides = {}) {
       from: '919999999999@c.us',
       fromMe: false,
       body,
-      type: 'chat',
+      hasMedia: false,
       timestamp: Date.now(),
       ...overrides,
     },
@@ -55,9 +55,50 @@ describe('handleMessage', () => {
     expect(ai.reply).not.toHaveBeenCalled();
   });
 
-  it('ignores non-chat messages', async () => {
+  it('replies to a verbatim real WAHA payload with no type field', async () => {
+    ai.reply.mockResolvedValue('Nishant is a developer.');
+
     await handleMessage(
-      makePayload('image', { type: 'image' }),
+      {
+        event: 'message',
+        session: 'default',
+        payload: {
+          id: 'real_waha_01',
+          from: '919999999999@c.us',
+          fromMe: false,
+          body: 'tell me about Nishant',
+          hasMedia: false,
+          timestamp: 1736400000,
+        },
+      },
+      { systemPrompt: '', memory: store, ai, waha, config }
+    );
+
+    expect(ai.reply).toHaveBeenCalledOnce();
+    expect(waha.sendText).toHaveBeenCalledWith('default', '919999999999@c.us', 'Nishant is a developer.');
+  });
+
+  it('ignores group messages', async () => {
+    await handleMessage(
+      makePayload('hi group', { from: '919999999999-123456789@g.us' }),
+      { systemPrompt: '', memory: store, ai, waha, config }
+    );
+    expect(ai.reply).not.toHaveBeenCalled();
+    expect(waha.sendText).not.toHaveBeenCalled();
+  });
+
+  it('ignores media messages', async () => {
+    await handleMessage(
+      makePayload('', { hasMedia: true }),
+      { systemPrompt: '', memory: store, ai, waha, config }
+    );
+    expect(ai.reply).not.toHaveBeenCalled();
+    expect(waha.sendText).not.toHaveBeenCalled();
+  });
+
+  it('ignores empty-body messages', async () => {
+    await handleMessage(
+      makePayload('   '),
       { systemPrompt: '', memory: store, ai, waha, config }
     );
     expect(ai.reply).not.toHaveBeenCalled();
@@ -67,8 +108,13 @@ describe('handleMessage', () => {
     ai.reply.mockResolvedValue('reply text');
     waha.sendText.mockRejectedValue(new Error('boom'));
 
+    const payload = makePayload('hi');
+    const phone = payload.payload.from;
+
     await expect(
-      handleMessage(makePayload('hi'), { systemPrompt: '', memory: store, ai, waha, config })
+      handleMessage(payload, { systemPrompt: '', memory: store, ai, waha, config })
     ).rejects.toThrow('boom');
+
+    expect(store.get(phone)).toHaveLength(0);
   });
 });

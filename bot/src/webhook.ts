@@ -1,4 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import { timingSafeEqual } from 'node:crypto';
 import type { PipelineContext } from './pipeline.js';
 import { handleMessage } from './pipeline.js';
 import { logger } from './logger.js';
@@ -13,7 +14,17 @@ export function createApp(ctx: PipelineContext): Application {
 
   app.post('/webhook', (req: Request, res: Response, next: NextFunction) => {
     const key = req.headers['x-api-key'];
-    if (key !== ctx.config.wahaApiKey) {
+    const provided = Array.isArray(key) ? key[0] : key;
+    const expected = ctx.config.wahaApiKey;
+    const keyBuffer = Buffer.from(String(provided ?? ''));
+    const expectedBuffer = Buffer.from(expected);
+
+    const authorized =
+      provided !== undefined &&
+      keyBuffer.length === expectedBuffer.length &&
+      timingSafeEqual(keyBuffer, expectedBuffer);
+
+    if (!authorized) {
       res.status(401).json({ error: 'unauthorized' });
       return;
     }
@@ -28,7 +39,11 @@ export function createApp(ctx: PipelineContext): Application {
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     logger.error({ err }, 'Unhandled error');
-    res.status(500).json({ error: 'internal error' });
+    const status =
+      typeof err === 'object' && err !== null && 'status' in err && typeof (err as any).status === 'number'
+        ? (err as any).status
+        : 500;
+    res.status(status).json({ error: 'internal error' });
   });
 
   return app;

@@ -16,6 +16,20 @@ export class WahaClient {
 
     logger.debug({ session, chatId }, 'Sending WAHA message');
 
+    try {
+      await this.attemptSend(session, chatId, text);
+    } catch (err) {
+      logger.warn({ err }, 'WAHA send failed, retrying once after 1s backoff');
+      await new Promise((r) => setTimeout(r, 1000));
+      try {
+        await this.attemptSend(session, chatId, text);
+      } catch (retryErr) {
+        throw retryErr;
+      }
+    }
+  }
+
+  private async attemptSend(session: string, chatId: string, text: string): Promise<void> {
     const res = await fetch(this.sendUrl, {
       method: 'POST',
       headers: {

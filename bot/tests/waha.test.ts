@@ -57,4 +57,48 @@ describe('WahaClient', () => {
     const client = new WahaClient(baseConfig as any);
     await expect(client.sendText('default', 'x', 'y')).rejects.toThrow(/WAHA send failed/);
   });
+
+  it('retries once and succeeds when the first attempt fails', async () => {
+    fetchSpy
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        text: async () => 'Internal Server Error',
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ success: true }),
+      } as Response);
+
+    const client = new WahaClient(baseConfig as any);
+    await expect(client.sendText('default', 'x', 'y')).resolves.toBeUndefined();
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries once and succeeds when the first attempt rejects', async () => {
+    fetchSpy
+      .mockRejectedValueOnce(new Error('network down'))
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ success: true }),
+      } as Response);
+
+    const client = new WahaClient(baseConfig as any);
+    await expect(client.sendText('default', 'x', 'y')).resolves.toBeUndefined();
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('throws when both attempts fail', async () => {
+    fetchSpy.mockResolvedValue({
+      ok: false,
+      status: 503,
+      text: async () => 'Service Unavailable',
+    } as Response);
+
+    const client = new WahaClient(baseConfig as any);
+    await expect(client.sendText('default', 'x', 'y')).rejects.toThrow('WAHA send failed: 503');
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
 });

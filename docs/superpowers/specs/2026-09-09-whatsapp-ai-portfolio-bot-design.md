@@ -109,11 +109,15 @@ sender — everything else is pure functions, easy to test.
     from: "919999999999@c.us",
     fromMe: false,
     body: "tell me about Nishant",
-    type: "chat",
+    hasMedia: false,
     timestamp: 1736400000
   }
 }
 ```
+
+Note: the payload shape above was corrected after checking WAHA's OpenAPI
+spec — the `message` payload has no `type` field, and `hasMedia` flags media
+messages.
 
 ### Outbound send (bot → WAHA)
 

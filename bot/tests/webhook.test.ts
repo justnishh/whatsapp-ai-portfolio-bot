@@ -33,7 +33,7 @@ describe('createApp', () => {
     const app = createApp(makeCtx());
     const res = await request(app)
       .post('/webhook')
-      .send({ event: 'message', session: 'default', payload: { id: 'm1', from: 'x', fromMe: false, body: 'hi', type: 'chat', timestamp: 1 } });
+      .send({ event: 'message', session: 'default', payload: { id: 'm1', from: 'x', fromMe: false, body: 'hi', hasMedia: false, timestamp: 1 } });
     expect(res.status).toBe(401);
   });
 
@@ -51,7 +51,7 @@ describe('createApp', () => {
           from: '919999999999@c.us',
           fromMe: false,
           body: 'hi',
-          type: 'chat',
+          hasMedia: false,
           timestamp: 1,
         },
       });
