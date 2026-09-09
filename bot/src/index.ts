@@ -9,7 +9,7 @@ import { logger } from './logger.js';
 
 async function main() {
   const config = buildConfig(process.env as Record<string, string>);
-  const knowledgeDir = path.resolve(process.cwd(), 'knowledge');
+  const knowledgeDir = path.resolve(config.knowledgeDir);
   const systemPrompt = await loadKnowledge(knowledgeDir);
 
   if (!systemPrompt) {

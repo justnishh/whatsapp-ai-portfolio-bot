@@ -1,32 +1,103 @@
 # WhatsApp AI Portfolio Bot
 
-A self-hosted WhatsApp chatbot powered by WAHA and OpenAI that answers questions about Nishant Kumar Sharma's portfolio, skills, and projects.
+A self-hosted WhatsApp chatbot that answers questions about you, built with
+WAHA, OpenAI, Node.js, and Docker.
 
-## Overview
+## Features
 
-- **WAHA** (WhatsApp HTTP API) runs in Docker and bridges WhatsApp to HTTP.
-- **Bot** is a Node.js + TypeScript + Express service that listens for WAHA webhooks, calls OpenAI with persona + knowledge context, and replies.
+- Connect any WhatsApp number by scanning a QR code
+- Answers from your own markdown knowledge base
+- Remembers the last 10 messages per user
+- Sends replies via the OpenAI API
+- Runs end-to-end with `docker compose up`
 
-## Structure
+## Quick start
+
+1. Clone the repo and copy the environment file:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/whatsapp-ai-portfolio-bot.git
+cd whatsapp-ai-portfolio-bot
+cp .env.example .env
+```
+
+2. Edit `.env` and add your keys:
+
+```bash
+OPENAI_API_KEY=sk-...
+WAHA_API_KEY=replace-with-a-long-random-string
+```
+
+3. Edit the markdown files in `knowledge/` to describe yourself.
+
+4. Start the services:
+
+```bash
+docker compose up -d
+```
+
+5. Open [http://localhost:3000](http://localhost:3000), scan the QR code with
+   WhatsApp on your phone.
+
+6. Text that WhatsApp number from another phone:
+
+```
+Hi! Who are you?
+```
+
+The bot replies in a few seconds.
+
+## Development
+
+Run the bot locally without Docker (WAHA must still be running):
+
+```bash
+cd bot
+cp ../.env .env
+npm install
+npm run dev
+```
+
+Note: the `knowledge/` directory lives at the repo root, while local dev runs
+from `bot/`. Set `KNOWLEDGE_DIR=../knowledge` in `bot/.env` (or run from the
+repo root) so the bot can find it. Docker mounts the directory correctly, so
+no change is needed there.
+
+Run tests:
+
+```bash
+cd bot
+npm test
+```
+
+## Project structure
 
 ```
 .
-├── docker-compose.yml   # WAHA + bot services
-├── .env.example        # required configuration template
-├── knowledge/          # persona + knowledge markdown files
+├── docker-compose.yml
+├── knowledge/
 │   ├── persona.md
 │   ├── resume.md
 │   ├── projects.md
 │   └── about.md
-└── bot/                # Node.js + TypeScript bot service
-    ├── Dockerfile
-    ├── package.json
-    ├── tsconfig.json
-    └── vitest.config.ts
+└── bot/
+    ├── src/
+    │   ├── index.ts
+    │   ├── config.ts
+    │   ├── knowledge.ts
+    │   ├── memory.ts
+    │   ├── ai.ts
+    │   ├── waha.ts
+    │   ├── pipeline.ts
+    │   └── webhook.ts
+    └── tests/
 ```
 
-## Setup
+## Customization
 
-1. Copy `.env.example` to `.env` and fill in `OPENAI_API_KEY` and `WAHA_API_KEY`.
-2. `docker compose up -d`
-3. Scan the QR code printed by WAHA to connect WhatsApp.
+Change the bot's personality and facts by editing files in `knowledge/`. No
+code changes needed.
+
+## License
+
+MIT
