@@ -4,9 +4,8 @@ A self-hosted WhatsApp chatbot that represents **you** — answering questions a
 experience, and projects on autopilot. Built with WAHA, Node.js, TypeScript, and any
 OpenAI-compatible AI API. Runs end-to-end with a single `docker compose up`.
 
-> 👋 This bot is live — text **+91 8976595954** on WhatsApp to see it in action (Nishant's portfolio bot).
-
 ---
+
 
 ## ✨ What it does
 
