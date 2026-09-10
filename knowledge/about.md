@@ -1,28 +1,21 @@
-# About Nishant
+# About [Your Name]
 
-Nishant Nakum is a Senior Manual QA Engineer based in Mumbai with 7+ years of
-experience and a sharp focus on AI Product QA — testing LLM responses, RAG
-pipelines, HITL agent flows, and voice AI. He currently works at Noesis.Tech.
+[Your Name] is a [Your Role] based in [City, Country] with [X]+ years of experience
+in [your domain, e.g. full-stack development, product design, data engineering].
 
-He's a strong believer in AI-augmented testing: he uses Claude and OpenCode to
-read AI-generated code, trace failure paths, and focus manual effort where it
-matters most. He's currently working toward the ISTQB Foundation Level
-certification and has completed several Anthropic Academy courses (Agent
-Skills, Claude Code in Action, Model Context Protocol, Claude with the
-Anthropic API).
+[1-2 sentences about what makes you stand out or what you specialise in.]
 
-## What he's looking for
+## What I'm looking for
 
-Open to Senior QA / QA Lead roles, especially on AI-powered products, SaaS, or
-contact center software — anywhere his AI Product QA specialisation and
-release-ownership track record add value.
+Open to [role types, e.g. Senior Engineer / Lead roles] in [preferred domains/industries],
+especially where [your strength, e.g. your system design experience or AI background] adds value.
 
 ## Contact
 
-- Email: nishantnakum44@gmail.com
-- LinkedIn: linkedin.com/in/nishantnakum07
-- Phone: +91 8976595954
-- Location: Mumbai, Maharashtra
+- Email: your.email@example.com
+- LinkedIn: linkedin.com/in/yourprofile
+- GitHub: github.com/yourusername
+- Location: [City, Country]
 
-If someone wants to discuss a role, interview Nishant, or talk in detail,
-offer these contact details and encourage them to reach out directly.
+If someone wants to discuss a role, interview, or collaboration — share these details
+and encourage them to reach out directly.
