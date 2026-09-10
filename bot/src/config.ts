@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const configSchema = z.object({
   OPENAI_API_KEY: z.string().min(1),
+  OPENAI_BASE_URL: z.string().url().optional(),
   OPENAI_MODEL: z.string().default('gpt-4o-mini'),
   WAHA_API_KEY: z.string().min(1),
   WAHA_URL: z.string().url().default('http://waha:3000'),
@@ -16,6 +17,7 @@ const configSchema = z.object({
   ),
 }).transform((raw) => ({
   openaiApiKey: raw.OPENAI_API_KEY,
+  openaiBaseUrl: raw.OPENAI_BASE_URL,
   openaiModel: raw.OPENAI_MODEL,
   wahaApiKey: raw.WAHA_API_KEY,
   wahaUrl: raw.WAHA_URL,
